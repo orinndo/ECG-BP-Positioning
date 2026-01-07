@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ニトロペン音声ガイド</title>
+<style>
+body{font-family:system-ui,-apple-system,"Hiragino Sans",sans-serif;margin:16px;line-height:1.4}
+.card{border:1px solid #e6e6e6;border-radius:12px;padding:14px;max-width:900px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+select,button{font-size:16px;padding:10px}
+.jp{font-size:20px;font-weight:700;margin:8px 0}
+.en{font-size:18px;margin:6px 0}
+.controls{margin:10px 0}
+audio{width:100%}
+</style>
+</head>
+<body>
+<h2>ニトロペン音声ガイド（日本語＋英語）</h2>
+<div class="card">
+<div class="row">
+<select id="sel"><option value="01">01. First, I&#x27;ll check your blood pressure, then I&#x27;ll put on the ECG on your chest.</option>
+<option value="02">02. I&#x27;ll take your blood pressure.</option>
+<option value="03">03. Please extend your left arm to the side.</option>
+<option value="04">04. Please extend your right arm to the side.</option>
+<option value="05">05. I&#x27;ll put the ECG on your chest.</option>
+<option value="06">06. A female staff member will put the ECG on your chest.</option>
+<option value="07">07. You will be asked to hold your breath several times during the scan, each time for about 10 seconds.</option>
+<option value="08">08. After you hold your breath, please try not to move your body.</option>
+<option value="09">09. If you move your body during the scan, we may not be able to get clear images of your heart.</option>
+<option value="10">10. Let&#x27;s try it together now.</option>
+<option value="11">11. Take a deep breath and hold it.</option>
+<option value="12">12. You can relax now.</option>
+<option value="13">13. As you did just now, please hold your breath the same way during the actual scan.</option>
+<option value="14">14. You&#x27;re holding your breath just a little late. If possible, please try to take a deep breath and hold it a little earlier.</option>
+<option value="15">15. When you hear the instruction, please take a deep breath and hold it right away. If you wait until the end, it may be too late for the scan.</option>
+<option value="16">16. Please raise your arms above your head.</option>
+<option value="17">17. Please try to keep the elbow straight on the side with the IV.</option>
+<option value="18">18. I&#x27;ll put cushions on your chest and stomach to help you stay still and fasten them with belts behind your back.</option>
+<option value="19">19. Take a deep breath, breathe out, and hold it</option>
+<option value="20">20. You can relax.</option>
+<option value="21">21. Is it too tight for you?</option>
+<option value="22">22. I&#x27;ll put the belt around you for your safety.</option>
+<option value="23">23. First, we&#x27;ll take some images without a contrast dye.</option>
+<option value="24">24. The bed will move now, please stay still.</option>
+<option value="25">25. Now, we&#x27;ll start the test.</option></select>
+<button id="prev">←</button>
+<button id="next">→</button>
+</div>
+<div class="jp" id="jp"></div>
+<div class="en" id="en"></div>
+<div class="controls">
+<button id="play">▶︎ 再生</button>
+<button id="pause">⏸ 停止</button>
+<button id="replay">↻ もう一度</button>
+</div>
+<audio id="player" controls playsinline preload="none"></audio>
+</div>
+<script>
+const STEPS=[{"id": "01", "jp": "（検査の案内）", "en": "First, I'll check your blood pressure, then I'll put on the ECG on your chest.", "audio": "audio/step_01.m4a"}, {"id": "02", "jp": "（検査の案内）", "en": "I'll take your blood pressure.", "audio": "audio/step_02.m4a"}, {"id": "03", "jp": "（検査の案内）", "en": "Please extend your left arm to the side.", "audio": "audio/step_03.m4a"}, {"id": "04", "jp": "（検査の案内）", "en": "Please extend your right arm to the side.", "audio": "audio/step_04.m4a"}, {"id": "05", "jp": "（検査の案内）", "en": "I'll put the ECG on your chest.", "audio": "audio/step_05.m4a"}, {"id": "06", "jp": "（検査の案内）", "en": "A female staff member will put the ECG on your chest.", "audio": "audio/step_06.m4a"}, {"id": "07", "jp": "息止めの指示は英語で行いますので、従ってください。", "en": "You will be asked to hold your breath several times during the scan, each time for about 10 seconds.", "audio": "audio/step_07.m4a"}, {"id": "08", "jp": "息止めの指示は英語で行いますので、従ってください。", "en": "After you hold your breath, please try not to move your body.", "audio": "audio/step_08.m4a"}, {"id": "09", "jp": "（検査の案内）", "en": "If you move your body during the scan, we may not be able to get clear images of your heart.", "audio": "audio/step_09.m4a"}, {"id": "10", "jp": "（検査の案内）", "en": "Let's try it together now.", "audio": "audio/step_10.m4a"}, {"id": "11", "jp": "（検査の案内）", "en": "Take a deep breath and hold it.", "audio": "audio/step_11.m4a"}, {"id": "12", "jp": "（検査の案内）", "en": "You can relax now.", "audio": "audio/step_12.m4a"}, {"id": "13", "jp": "息止めの指示は英語で行いますので、従ってください。", "en": "As you did just now, please hold your breath the same way during the actual scan.", "audio": "audio/step_13.m4a"}, {"id": "14", "jp": "ベッドに仰向けで寝てください。", "en": "You're holding your breath just a little late. If possible, please try to take a deep breath and hold it a little earlier.", "audio": "audio/step_14.m4a"}, {"id": "15", "jp": "（検査の案内）", "en": "When you hear the instruction, please take a deep breath and hold it right away. If you wait until the end, it may be too late for the scan.", "audio": "audio/step_15.m4a"}, {"id": "16", "jp": "両腕を頭の上に上げてください。", "en": "Please raise your arms above your head.", "audio": "audio/step_16.m4a"}, {"id": "17", "jp": "（検査の案内）", "en": "Please try to keep the elbow straight on the side with the IV.", "audio": "audio/step_17.m4a"}, {"id": "18", "jp": "（検査の案内）", "en": "I'll put cushions on your chest and stomach to help you stay still and fasten them with belts behind your back.", "audio": "audio/step_18.m4a"}, {"id": "19", "jp": "（検査の案内）", "en": "Take a deep breath, breathe out, and hold it", "audio": "audio/step_19.m4a"}, {"id": "20", "jp": "（検査の案内）", "en": "You can relax.", "audio": "audio/step_20.m4a"}, {"id": "21", "jp": "（検査の案内）", "en": "Is it too tight for you?", "audio": "audio/step_21.m4a"}, {"id": "22", "jp": "（検査の案内）", "en": "I'll put the belt around you for your safety.", "audio": "audio/step_22.m4a"}, {"id": "23", "jp": "（検査の案内）", "en": "First, we'll take some images without a contrast dye.", "audio": "audio/step_23.m4a"}, {"id": "24", "jp": "（検査の案内）", "en": "The bed will move now, please stay still.", "audio": "audio/step_24.m4a"}, {"id": "25", "jp": "（検査の案内）", "en": "Now, we'll start the test.", "audio": "audio/step_25.m4a"}];
+const sel=document.getElementById('sel');
+const jp=document.getElementById('jp');
+const en=document.getElementById('en');
+const player=document.getElementById('player');
+const prev=document.getElementById('prev');
+const next=document.getElementById('next');
+
+function idx(){return STEPS.findIndex(s=>s.id===sel.value);}
+function load(i){
+ if(i<0)i=0;if(i>=STEPS.length)i=STEPS.length-1;
+ const s=STEPS[i];
+ sel.value=s.id;
+ jp.textContent=s.jp;
+ en.textContent=s.en;
+ player.src=s.audio;
+ player.currentTime=0;
+}
+sel.addEventListener('change',()=>load(idx()));
+prev.onclick=()=>load(idx()-1);
+next.onclick=()=>load(idx()+1);
+document.getElementById('play').onclick=()=>player.play();
+document.getElementById('pause').onclick=()=>player.pause();
+document.getElementById('replay').onclick=()=>{player.currentTime=0;player.play()};
+load(0);
+</script>
+</body>
+</html>
