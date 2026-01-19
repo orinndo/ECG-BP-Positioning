@@ -1,109 +1,190 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>血圧測定・心電図貼り付け・ポジショニング 音声ガイド</title>
-<style>
-body{font-family:system-ui,-apple-system,"Hiragino Sans",sans-serif;margin:18px;line-height:1.45;}
-h1{font-size:26px;margin:0 0 8px 0;}
-.note{font-size:12px;color:#666;margin:0 0 16px 0;}
-.panel{border:1px solid #e6e6e6;border-radius:14px;padding:14px;max-width:980px;}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-.tag{display:inline-block;font-size:12px;color:#666;background:#f5f5f5;border:1px solid #e6e6e6;border-radius:999px;padding:4px 10px;}
-select{font-size:16px;padding:10px 12px;min-width:320px;flex:1;border-radius:10px;border:1px solid #dcdcdc;}
-.navbtn{font-size:16px;padding:10px 14px;border:1px solid #dcdcdc;background:#fff;border-radius:10px;min-width:70px;}
-.navbtn:disabled{opacity:.35;}
-.label{font-size:12px;color:#666;margin-top:14px;}
-.jp{font-size:22px;font-weight:800;margin:6px 0 14px 0;}
-.en{font-size:18px;margin:6px 0 0 0;}
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 8px 0;}
-.btn{font-size:16px;padding:10px 14px;border:1px solid #dcdcdc;background:#fff;border-radius:12px;min-width:150px;}
-.status{font-size:12px;color:#666;margin:6px 0 6px 0;}
-audio{width:100%;margin-top:6px;}
-.hint{font-size:12px;color:#666;margin-top:8px;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>血圧測定・心電図・息止め練習</title>
+  <style>
+    :root{
+      --blue:#38bdf8;
+      --blue2:#60a5fa;
+      --border:#cbd5f5;
+      --text:#0f172a;
+      --muted:#475569;
+      --muted2:#64748b;
+      --bg1:#f7fbff;
+      --bg2:#eef6ff;
+      --card:#ffffff;
+    }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Segoe UI",sans-serif;
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--text);
+    }
+    .wrap{max-width:760px;margin:0 auto;}
+    .header{padding:18px 16px 10px;}
+    .frame-title{
+      border:2px solid var(--blue);
+      padding:14px 16px;
+      border-radius:14px;
+      background:#f8fcff;
+      text-align:center;
+      box-shadow:0 6px 14px rgba(15,23,42,.06);
+    }
+    .frame-title h1{margin:0;font-size:20px;letter-spacing:.02em;}
+    .frame-title p{margin:6px 0 0;font-size:14px;color:var(--muted);}
+    .note{font-size:12px;color:var(--muted);margin:12px 16px;line-height:1.5;}
+    .main{
+      margin:0 16px 24px;
+      padding:16px;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:0 10px 22px rgba(15,23,42,.08);
+    }
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    select{
+      flex:1;
+      max-width:100%;
+      font-size:16px;
+      padding:10px 36px 10px 12px; /* caret space */
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#f1f7ff;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      color:#0b4a8b;
+      font-weight:700;
+    }
+    button{
+      font-size:15px;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#eff6ff;
+      color:#0b4a8b;
+      font-weight:700;
+    }
+    button:active{transform:scale(.98);}
+    .label{margin-top:14px;font-size:13px;color:var(--muted);}
+    .jp{font-size:20px;font-weight:800;margin-top:6px;line-height:1.35;}
+    .en{font-size:16px;margin-top:6px;line-height:1.45;color:#111827;}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+    .status{margin-top:10px;font-size:13px;color:var(--muted);font-weight:700;}
+    audio{width:100%;margin-top:8px;}
+    .hint{margin-top:10px;font-size:12px;color:var(--muted2);line-height:1.5;}
+  </style>
 </head>
 <body>
-<h1>血圧測定・心電図貼り付け・ポジショニング 音声ガイド</h1>
-<p class="note">※ 必ず GitHub Pages のURLで開いてください。iPhoneでは自動再生できないため、下の再生ボタンを押してください。</p>
-<div class="panel">
-<div class="row">
-<span class="tag">ステップ選択</span>
-<select id="stepSelect"><option value="01">01. まず血圧を測ってから、胸に心電図を付けます。</option>
-<option value="02">02. 血圧を測りますね。</option>
-<option value="03">03. 左腕を横に伸ばしてください。</option>
-<option value="04">04. 右腕を横に伸ばしてください。</option>
-<option value="05">05. 胸に心電図を付けますね。</option>
-<option value="06">06. 女性スタッフが胸に心電図を付けますね。</option>
-<option value="07">07. 検査中は息止めを数回お願いし、1回約10秒です。</option>
-<option value="08">08. 息を止めたら体を動かさないでください。</option>
-<option value="09">09. 体が動くと心臓の画像がきれいに撮れないことがあります。</option>
-<option value="10">10. では一緒に練習しましょう。</option>
-<option value="11">11. 大きく息を吸って、止めてください。</option>
-<option value="12">12. 楽にしてください。</option>
-<option value="13">13. 今と同じように、本番でも息止めをしてください。</option>
-<option value="14">14. 息止めのタイミングが少し遅いです。できればもう少し早めに息を吸って止めてください。</option>
-<option value="15">15. 合図が聞こえたらすぐに大きく息を吸って止めてください。</option>
-<option value="16">16. 両腕を頭の上に上げてください。</option>
-<option value="17">17. 点滴の入っている側の肘は、できるだけまっすぐにしてください。</option>
-<option value="18">18. 動かないように胸とお腹にクッションを当て、背中側でベルトで固定しますね。</option>
-<option value="19">19. 大きく息を吸って、吐いて、止めてください。</option>
-<option value="20">20. 楽にしてください。</option>
-<option value="21">21. きつくないですか？</option>
-<option value="22">22. 安全のためにベルトを付けますね。</option>
-<option value="23">23. まず造影剤なしで撮影します。</option>
-<option value="24">24. これからベッドが動きます。動かないでください。</option>
-<option value="25">25. それでは検査を始めます。</option></select>
-<button class="navbtn" id="prevBtn">← 前</button>
-<button class="navbtn" id="nextBtn">次 →</button>
-</div>
-<div class="label">日本語（内容）</div>
-<div class="jp" id="jpText"></div>
-<div class="label">English (Script)</div>
-<div class="en" id="enText"></div>
-<div class="controls">
-<button class="btn" id="playBtn">▶︎ 再生 / Play</button>
-<button class="btn" id="pauseBtn">⏸ 一時停止 / Pause</button>
-<button class="btn" id="replayBtn">↻ もう一度 / Replay</button>
-</div>
-<div class="status" id="status">待機中 / Ready</div>
-<audio id="player" controls playsinline preload="none"></audio>
-<div class="hint">再生できない場合は、消音モード・音量・Bluetooth接続をご確認ください。</div>
-</div>
+  <div class="wrap">
+    <div class="header">
+      <div class="frame-title">
+        <h1>血圧測定・心電図・息止め練習</h1>
+        <p>English Audio Guide</p>
+      </div>
+    </div>
+
+    <p class="note">※ iPhone / iPad / Android で再生できます。自動再生は端末側で制限されるため、最初は「再生」を押してください。</p>
+
+    <div class="main">
+      <div class="row">
+        <select id="stepSelect" aria-label="ステップ選択"></select>
+        <button id="prevBtn" type="button">← 前</button>
+        <button id="nextBtn" type="button">次 →</button>
+      </div>
+
+      <div class="label">日本語（内容）</div>
+      <div class="jp" id="jpText"></div>
+
+      <div class="label">English (Script)</div>
+      <div class="en" id="enText"></div>
+
+      <div class="controls">
+        <button id="playBtn" type="button">▶︎ 再生</button>
+        <button id="pauseBtn" type="button">⏸ 一時停止</button>
+        <button id="replayBtn" type="button">↻ もう一度</button>
+      </div>
+
+      <div class="status" id="status">待機中 / Ready</div>
+      <audio id="audio" controls preload="metadata"></audio>
+
+      <div class="hint">再生できない場合：端末の消音モード解除、音量、Bluetooth接続を確認してください。</div>
+    </div>
+  </div>
+
 <script>
-const STEPS=[{"id": "01", "jp": "まず血圧を測ってから、胸に心電図を付けます。", "en": "First, I'll check your blood pressure, then I'll put on the ECG on your chest.", "audio": "audio/step_01.m4a"}, {"id": "02", "jp": "血圧を測りますね。", "en": "I'll take your blood pressure.", "audio": "audio/step_02.m4a"}, {"id": "03", "jp": "左腕を横に伸ばしてください。", "en": "Please extend your left arm to the side.", "audio": "audio/step_03.m4a"}, {"id": "04", "jp": "右腕を横に伸ばしてください。", "en": "Please extend your right arm to the side.", "audio": "audio/step_04.m4a"}, {"id": "05", "jp": "胸に心電図を付けますね。", "en": "I'll put the ECG on your chest.", "audio": "audio/step_05.m4a"}, {"id": "06", "jp": "女性スタッフが胸に心電図を付けますね。", "en": "A female staff member will put the ECG on your chest.", "audio": "audio/step_06.m4a"}, {"id": "07", "jp": "検査中は息止めを数回お願いし、1回約10秒です。", "en": "You will be asked to hold your breath several times during the scan, each time for about 10 seconds.", "audio": "audio/step_07.m4a"}, {"id": "08", "jp": "息を止めたら体を動かさないでください。", "en": "After you hold your breath, please try not to move your body.", "audio": "audio/step_08.m4a"}, {"id": "09", "jp": "体が動くと心臓の画像がきれいに撮れないことがあります。", "en": "If you move your body during the scan, we may not be able to get clear images of your heart.", "audio": "audio/step_09.m4a"}, {"id": "10", "jp": "では一緒に練習しましょう。", "en": "Let's try it together now.", "audio": "audio/step_10.m4a"}, {"id": "11", "jp": "大きく息を吸って、止めてください。", "en": "Take a deep breath and hold it.", "audio": "audio/step_11.m4a"}, {"id": "12", "jp": "楽にしてください。", "en": "You can relax now.", "audio": "audio/step_12.m4a"}, {"id": "13", "jp": "今と同じように、本番でも息止めをしてください。", "en": "As you did just now, please hold your breath the same way during the actual scan.", "audio": "audio/step_13.m4a"}, {"id": "14", "jp": "息止めのタイミングが少し遅いです。できればもう少し早めに息を吸って止めてください。", "en": "You're holding your breath just a little late. If possible, please try to take a deep breath and hold it a little earlier.", "audio": "audio/step_14.m4a"}, {"id": "15", "jp": "合図が聞こえたらすぐに大きく息を吸って止めてください。", "en": "When you hear the instruction, please take a deep breath and hold it right away. If you wait until the end, it may be too late for the scan.", "audio": "audio/step_15.m4a"}, {"id": "16", "jp": "両腕を頭の上に上げてください。", "en": "Please raise your arms above your head.", "audio": "audio/step_16.m4a"}, {"id": "17", "jp": "点滴の入っている側の肘は、できるだけまっすぐにしてください。", "en": "Please try to keep the elbow straight on the side with the IV.", "audio": "audio/step_17.m4a"}, {"id": "18", "jp": "動かないように胸とお腹にクッションを当て、背中側でベルトで固定しますね。", "en": "I'll put cushions on your chest and stomach to help you stay still and fasten them with belts behind your back.", "audio": "audio/step_18.m4a"}, {"id": "19", "jp": "大きく息を吸って、吐いて、止めてください。", "en": "Take a deep breath, breathe out, and hold it", "audio": "audio/step_19.m4a"}, {"id": "20", "jp": "楽にしてください。", "en": "You can relax.", "audio": "audio/step_20.m4a"}, {"id": "21", "jp": "きつくないですか？", "en": "Is it too tight for you?", "audio": "audio/step_21.m4a"}, {"id": "22", "jp": "安全のためにベルトを付けますね。", "en": "I'll put the belt around you for your safety.", "audio": "audio/step_22.m4a"}, {"id": "23", "jp": "まず造影剤なしで撮影します。", "en": "First, we'll take some images without a contrast dye.", "audio": "audio/step_23.m4a"}, {"id": "24", "jp": "これからベッドが動きます。動かないでください。", "en": "The bed will move now, please stay still.", "audio": "audio/step_24.m4a"}, {"id": "25", "jp": "それでは検査を始めます。", "en": "Now, we'll start the test.", "audio": "audio/step_25.m4a"}];
-const sel=document.getElementById('stepSelect');
-const jpEl=document.getElementById('jpText');
-const enEl=document.getElementById('enText');
-const player=document.getElementById('player');
-const statusEl=document.getElementById('status');
-const prevBtn=document.getElementById('prevBtn');
-const nextBtn=document.getElementById('nextBtn');
-function setStatus(s){statusEl.textContent=s;}
-function idx(){return STEPS.findIndex(s=>s.id===sel.value);}
-function load(i){
- if(i<0)i=0;if(i>=STEPS.length)i=STEPS.length-1;
- const s=STEPS[i];
- sel.value=s.id;
- jpEl.textContent=s.jp||"";
- enEl.textContent=s.en||"";
- player.src=s.audio;
- player.currentTime=0;
- setStatus("待機中 / Ready");
- prevBtn.disabled=(i===0);
- nextBtn.disabled=(i===STEPS.length-1);
-}
-sel.addEventListener('change',()=>load(idx()));
-prevBtn.onclick=()=>load(idx()-1);
-nextBtn.onclick=()=>load(idx()+1);
-document.getElementById('playBtn').onclick=async()=>{try{await player.play();}catch(e){alert("再生できませんでした。");}};
-document.getElementById('pauseBtn').onclick=()=>player.pause();
-document.getElementById('replayBtn').onclick=async()=>{player.currentTime=0;try{await player.play();}catch(e){}};
-player.onplay=()=>setStatus("再生中 / Playing");
-player.onpause=()=>setStatus("一時停止 / Paused");
-player.onended=()=>setStatus("待機中 / Ready");
-load(0);
+  // 25-step script (JP/EN). EN is extracted from the audio file names (cleaned for display).
+  const STEPS = [
+    { jp: "まず血圧を測定し、その後、胸に心電図を装着します。", en: "First, I’ll check your blood pressure, then I’ll put the ECG on your chest." },
+    { jp: "血圧を測ります。", en: "I’ll take your blood pressure." },
+    { jp: "左腕を横に伸ばしてください。", en: "Please extend your left arm to the side." },
+    { jp: "右腕を横に伸ばしてください。", en: "Please extend your right arm to the side." },
+    { jp: "胸に心電図を装着します。", en: "I’ll put the ECG on your chest." },
+    { jp: "女性スタッフが胸に心電図を装着します。", en: "A female staff member will put the ECG on your chest." },
+    { jp: "検査中は何度か息止めをしていただきます。1回あたり約10秒です。", en: "You will be asked to hold your breath several times during the scan, each time for about 10 seconds." },
+    { jp: "息を止めた後は、できるだけ体を動かさないでください。", en: "After you hold your breath, please try not to move your body." },
+    { jp: "検査中に体が動くと、心臓の画像がきれいに撮れない場合があります。", en: "If you move your body during the scan, we may not be able to get clear images of your heart." },
+    { jp: "それでは、一緒に練習してみましょう。", en: "Let’s try it together now." },
+    { jp: "大きく息を吸って、止めてください。", en: "Take a deep breath and hold it." },
+    { jp: "楽にしてください。", en: "You can relax now." },
+    { jp: "本番の撮影でも、今と同じように息を止めてください。", en: "As you did just now, please hold your breath the same way during the actual scan." },
+    { jp: "息止めが少し遅れています。可能であれば、もう少し早めに息を吸って止めてください。", en: "You’re holding your breath just a little late. If possible, please try to take a deep breath and hold it a little earlier." },
+    { jp: "合図が聞こえたら、すぐに息を吸って止めてください。最後まで待つと撮影に間に合わないことがあります。", en: "When you hear the instruction, please take a deep breath and hold it right away. If you wait until the end, it may be too late for the scan." },
+    { jp: "両腕を頭の上に上げてください。", en: "Please raise your arms above your head." },
+    { jp: "点滴をしている側の肘は、できるだけまっすぐに保ってください。", en: "Please try to keep the elbow straight on the side with the IV." },
+    { jp: "動かないようにするため、胸とお腹にクッションを置いて、背中側でベルトを留めます。", en: "I’ll put cushions on your chest and stomach to help you stay still and fasten them with belts behind your back." },
+    { jp: "大きく息を吸って、吐いてから、止めてください。", en: "Take a deep breath, breathe out, and hold it." },
+    { jp: "楽にしてください。", en: "You can relax." },
+    { jp: "苦しくないですか？きつくないですか？", en: "Is it too tight for you?" },
+    { jp: "安全のため、体にベルトを装着します。", en: "I’ll put the belt around you for your safety." },
+    { jp: "まず、造影剤を使わずに撮影します。", en: "First, we’ll take some images without a contrast dye." },
+    { jp: "これからベッドが動きます。動かないでください。", en: "The bed will move now, please stay still." },
+    { jp: "それでは検査を開始します。", en: "Now, we’ll start the test." }
+  ];
+
+  const stepSelect = document.getElementById('stepSelect');
+  const jpText = document.getElementById('jpText');
+  const enText = document.getElementById('enText');
+  const audio = document.getElementById('audio');
+  const status = document.getElementById('status');
+
+  const pad2 = (n) => String(n).padStart(2, '0');
+
+  STEPS.forEach((s, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    // Full JP in the dropdown list; closed state will be ellipsized by CSS.
+    opt.textContent = `${pad2(i + 1)}｜${s.jp}`;
+    stepSelect.appendChild(opt);
+  });
+
+  let idx = 0;
+  function load(i) {
+    idx = Math.max(0, Math.min(STEPS.length - 1, i));
+    stepSelect.value = idx;
+    jpText.textContent = STEPS[idx].jp;
+    enText.textContent = STEPS[idx].en;
+    audio.src = `audio/step_${pad2(idx + 1)}.m4a`;
+    status.textContent = '待機中 / Ready';
+  }
+
+  stepSelect.addEventListener('change', () => load(parseInt(stepSelect.value, 10)));
+  document.getElementById('prevBtn').addEventListener('click', () => load(idx - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => load(idx + 1));
+
+  document.getElementById('playBtn').addEventListener('click', () => audio.play());
+  document.getElementById('pauseBtn').addEventListener('click', () => audio.pause());
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    audio.currentTime = 0;
+    audio.play();
+  });
+
+  audio.addEventListener('play', () => status.textContent = '再生中 / Playing');
+  audio.addEventListener('pause', () => status.textContent = '一時停止 / Paused');
+  audio.addEventListener('ended', () => status.textContent = '待機中 / Ready');
+
+  load(0);
 </script>
 </body>
 </html>
